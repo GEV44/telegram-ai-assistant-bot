@@ -1,0 +1,11 @@
+services:
+  bot:
+    build: .
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - bot-data:/app/data          # SQLite database survives restarts
+      - ./config:/app/config:ro     # edit FAQ / services without rebuilding
+
+volumes:
+  bot-data:

@@ -1,0 +1,35 @@
+# Fictional business used to showcase the bot. Replace with your own details.
+business:
+  name: Smile Studio
+  default_lang: en
+
+services:
+  - id: checkup
+    names:
+      en: Check-up and consultation
+      ru: Осмотр и консультация
+      hy: Զննում և խորհրդատվություն
+  - id: cleaning
+    names:
+      en: Professional cleaning
+      ru: Профессиональная чистка
+      hy: Մասնագիտական մաքրում
+  - id: whitening
+    names:
+      en: Teeth whitening
+      ru: Отбеливание зубов
+      hy: Ատամների սպիտակեցում
+  - id: filling
+    names:
+      en: Filling treatment
+      ru: Лечение кариеса
+      hy: Կարիեսի բուժում
+
+schedule:
+  open: "09:00"
+  close: "18:00"
+  slot_minutes: 60
+  open_weekdays: [0, 1, 2, 3, 4, 5]   # Monday = 0 ... Sunday = 6
+  horizon_days: 14
+  breaks:
+    - ["13:00", "14:00"]

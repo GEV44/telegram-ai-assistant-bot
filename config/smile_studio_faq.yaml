@@ -1,0 +1,53 @@
+# Knowledge base. One entry per question. `lang` is auto-detected from the question
+# if omitted. A Markdown file ("## Question" + answer text) works too.
+faq:
+  - q: What are your opening hours?
+    a: "Smile Studio is open Monday to Saturday, 09:00 to 18:00, with a lunch break from 13:00 to 14:00. We are closed on Sundays."
+  - q: Where is the clinic located and how do I get there?
+    a: "We are at 12 Example Street, Sample City (fictional address). There is free parking in the courtyard and a bus stop 2 minutes away."
+  - q: Does teeth cleaning hurt? What does professional cleaning include?
+    a: "Professional cleaning uses ultrasound and air polishing and is painless for most patients. It removes plaque and tartar and takes about an hour."
+  - q: How does teeth whitening work and is it safe?
+    a: "We use a dentist-supervised gel system. After an exam we confirm it is suitable for you. Sensitivity for a day or two is possible."
+  - q: Do you treat children?
+    a: "Yes. Our paediatric dentist sees children from 3 years old, and the first visit is a friendly introduction without treatment."
+  - q: What payment methods do you accept? Do you offer installments?
+    a: "We accept cash and cards. Installment plans for larger treatments are discussed individually at the consultation."
+  - q: What should I bring to my first visit?
+    a: "Just an ID and any previous X-rays if you have them. Please arrive 10 minutes early to fill in a short form."
+  - q: Can I cancel or reschedule my appointment?
+    a: "Yes, please let us know at least 24 hours ahead via this bot (/human) so another patient can use the time."
+  - q: Do you have emergency appointments for toothache?
+    a: "We keep a few slots free each day for acute pain. Use /human and describe the problem; we will answer as fast as possible."
+  - q: Do you speak English, Russian and Armenian?
+    a: "Yes, our team speaks Armenian, Russian and English."
+
+  - q: Какие у вас часы работы?
+    a: "Smile Studio работает с понедельника по субботу с 09:00 до 18:00, обед с 13:00 до 14:00. Воскресенье - выходной."
+  - q: Где находится клиника и как добраться?
+    a: "Мы находимся по адресу ул. Пример, 12, Город Образец (вымышленный адрес). Во дворе бесплатная парковка, остановка в двух минутах."
+  - q: Больно ли делать чистку зубов? Что входит в профессиональную чистку?
+    a: "Профессиональная чистка выполняется ультразвуком и Air Flow и для большинства пациентов безболезненна. Убирает налёт и камень, занимает около часа."
+  - q: Как проходит отбеливание зубов и безопасно ли оно?
+    a: "Мы используем систему с гелем под контролем врача. После осмотра подтверждаем, что она вам подходит. Возможна чувствительность на день-два."
+  - q: Вы лечите детей?
+    a: "Да. Детский стоматолог принимает с трёх лет, первый визит - знакомство без лечения."
+  - q: Как можно оплатить? Есть ли рассрочка?
+    a: "Принимаем наличные и карты. Рассрочка на крупное лечение обсуждается индивидуально на консультации."
+  - q: Что взять с собой на первый приём?
+    a: "Только документ и прежние снимки, если есть. Приходите за 10 минут, чтобы заполнить короткую анкету."
+  - q: Можно ли отменить или перенести запись?
+    a: "Да, предупредите нас минимум за 24 часа через этого бота (/human), чтобы время смог занять другой пациент."
+  - q: Есть ли срочный приём при зубной боли?
+    a: "Каждый день мы оставляем несколько окон для острой боли. Нажмите /human и опишите проблему, ответим как можно быстрее."
+
+  - q: Ինչ աշխատանքային ժամեր ունեք։
+    a: "Smile Studio-ն աշխատում է երկուշաբթիից շաբաթ, 09:00-ից 18:00, ճաշի ընդմիջում՝ 13:00-14:00։ Կիրակի օրը փակ ենք։"
+  - q: Որտեղ եք գտնվում և ինչպես հասնել։
+    a: "Մենք գտնվում ենք Օրինակ փողոց 12, Նմուշ քաղաք (պայմանական հասցե)։ Բակում անվճար կայանատեղի կա, կանգառը երկու րոպեի վրա է։"
+  - q: Ատամների մաքրումը ցավոտ է։ Ինչ է ներառում մասնագիտական մաքրումը։
+    a: "Մասնագիտական մաքրումը կատարվում է ուլտրաձայնով և շատ հիվանդների համար ցավազուրկ է։ Հեռացնում է փառը և քարը, տևում է մոտ մեկ ժամ։"
+  - q: Երեխաներին բուժում եք։
+    a: "Այո։ Մանկական ատամնաբույժը ընդունում է 3 տարեկանից, առաջին այցը ծանոթացում է առանց բուժման։"
+  - q: Ինչպես կարելի է վճարել, կա՞ մասնաբաժին։
+    a: "Ընդունում ենք կանխիկ և քարտ։ Խոշոր բուժման դեպքում տարաժամկետ վճարումը քննարկվում է խորհրդատվության ժամանակ։"

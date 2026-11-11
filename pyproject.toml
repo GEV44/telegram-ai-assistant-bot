@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telegram-ai-assistant-bot"
+version = "1.0.0"
+description = "Configurable AI business assistant for Telegram: FAQ retrieval, booking, lead capture, human handoff."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "aiogram>=3.4,<4",
+    "aiohttp>=3.9",
+    "PyYAML>=6",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5", "mypy>=1.8", "types-PyYAML"]
+
+[project.scripts]
+tg-assistant = "tg_assistant.bot:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003"]  # Cyrillic/Armenian text is intentional
+
+[tool.ruff.lint.per-file-ignores]
+"src/tg_assistant/i18n.py" = ["E501"]  # long message strings
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src"]
