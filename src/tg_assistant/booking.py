@@ -11,6 +11,7 @@ from enum import StrEnum
 from .config import BusinessConfig, Service
 from .db import Booking, Database, SlotTakenError
 from .i18n import is_no, is_yes, t
+from .reminders import passed_offsets
 
 _PHONE_CHARS = re.compile(r"^\+?[\d\s\-().]+$")
 
@@ -27,15 +28,24 @@ class Step(StrEnum):
 
 
 @dataclass
+class Card:
+    """A message with inline buttons: ``buttons`` are ``(label, callback_data)`` pairs."""
+
+    text: str
+    buttons: list[tuple[str, str]] = field(default_factory=list)
+
+
+@dataclass
 class Reply:
     text: str
     options: list[str] = field(default_factory=list)
     admin_notice: str | None = None
+    cards: list[Card] = field(default_factory=list)
 
 
 @dataclass
 class Flow:
-    """State of one user's dialog. ``kind`` is ``booking`` or ``lead``."""
+    """State of one user's dialog. ``kind`` is ``booking``, ``reschedule`` or ``lead``."""
 
     kind: str
     lang: str
@@ -47,6 +57,8 @@ class Flow:
     time: str = ""
     name: str = ""
     phone: str = ""
+    booking_id: int = 0  # reschedule only: the booking being moved
+    old_slot: str = ""  # reschedule only: "<date> <time>" before the move
 
     @property
     def active(self) -> bool:
@@ -173,7 +185,10 @@ class BookingEngine:
         elif step is Step.TIME:
             if value not in self.free_slots(date.fromisoformat(flow.date)):
                 return self._retry(flow, "bad_time")
-            flow.time, flow.step = value, Step.NAME
+            flow.time = value
+            if flow.kind == "reschedule":
+                return self._finish_reschedule(flow)
+            flow.step = Step.NAME
         elif step is Step.NAME:
             if len(re.sub(r"[^\w]", "", value)) < 2 or len(value) > 60:
                 return self._retry(flow, "bad_name")
@@ -207,13 +222,20 @@ class BookingEngine:
         assert flow.service is not None
         try:
             booking = self.db.add_booking(
-                flow.user_id, flow.service.id, flow.date, flow.time, flow.name, flow.phone
+                flow.user_id,
+                flow.service.id,
+                flow.date,
+                flow.time,
+                flow.name,
+                flow.phone,
+                lang=flow.lang,
             )
         except SlotTakenError:
             flow.step = Step.TIME
             reply = self.prompt(flow)
             reply.text = f"{t(flow.lang, 'slot_taken')}\n{reply.text}"
             return reply
+        self._skip_past_reminders(booking)
         flow.step = Step.DONE
         return Reply(
             t(
@@ -226,6 +248,103 @@ class BookingEngine:
             ),
             admin_notice=self._booking_notice(booking, flow),
         )
+
+    def _skip_past_reminders(self, booking: Booking) -> None:
+        """A reminder whose moment has already passed is recorded as sent, never delivered."""
+        offsets = self.config.reminder_offsets_minutes
+        for offset in passed_offsets(booking.start, self._now(), offsets):
+            self.db.mark_reminder(booking.id, offset)
+
+    def _finish_reschedule(self, flow: Flow) -> Reply:
+        try:
+            moved = self.db.move_booking(flow.booking_id, flow.date, flow.time)
+        except SlotTakenError:
+            flow.step = Step.TIME
+            reply = self.prompt(flow)
+            reply.text = f"{t(flow.lang, 'slot_taken')}\n{reply.text}"
+            return reply
+        flow.step = Step.DONE
+        if moved is None:
+            return Reply(t(flow.lang, "booking_not_found"))
+        self._skip_past_reminders(moved)
+        who = f"@{flow.username}" if flow.username else str(flow.user_id)
+        notice = (
+            f"Booking #{moved.id} rescheduled: {flow.old_slot} -> {moved.date} {moved.time}\n"
+            f"{moved.service}, {moved.name}, {moved.phone} ({who})"
+        )
+        service = self.service_name(moved.service, flow.lang)
+        text = t(
+            flow.lang, "booking_rescheduled", service=service, date=moved.date, time=moved.time
+        )
+        return Reply(text, admin_notice=notice)
+
+    # ---- manage existing bookings --------------------------------------
+    def service_name(self, service_id: str, lang: str) -> str:
+        for s in self.config.services:
+            if s.id == service_id:
+                return s.name(lang)
+        return service_id
+
+    def user_bookings(self, user_id: int) -> list[Booking]:
+        """The customer's upcoming (not yet started) bookings."""
+        now = self._now()
+        found = self.db.bookings_from(now.date().isoformat(), user_id)
+        return [b for b in found if b.start > now]
+
+    def _own(self, booking_id: int, user_id: int) -> Booking | None:
+        booking = self.db.get_booking(booking_id)
+        return booking if booking and booking.user_id == user_id else None
+
+    def cancel_booking(self, booking_id: int, user_id: int, lang: str = "en") -> Reply | None:
+        """Cancel the customer's own booking and free its slot; None when not theirs."""
+        booking = self._own(booking_id, user_id)
+        if booking is None or not self.db.cancel_booking(booking_id):
+            return None
+        service = self.service_name(booking.service, lang)
+        return Reply(
+            t(lang, "booking_cancelled", service=service, date=booking.date, time=booking.time),
+            admin_notice=(
+                f"Booking #{booking.id} cancelled by customer: {booking.date} {booking.time}\n"
+                f"{booking.service}, {booking.name}, {booking.phone} (id {booking.user_id})"
+            ),
+        )
+
+    def confirm_booking(self, booking_id: int, user_id: int, lang: str = "en") -> Reply | None:
+        booking = self._own(booking_id, user_id)
+        if booking is None or not self.db.confirm_booking(booking_id):
+            return None
+        return Reply(t(lang, "visit_confirmed", date=booking.date, time=booking.time))
+
+    def start_reschedule(
+        self, booking_id: int, user_id: int, lang: str, username: str = ""
+    ) -> tuple[Flow, Reply] | None:
+        """Begin the date/time flow for an existing booking (service, name, phone are kept)."""
+        booking = self._own(booking_id, user_id)
+        if booking is None:
+            return None
+        service = next((s for s in self.config.services if s.id == booking.service), None)
+        flow = Flow(
+            kind="reschedule",
+            lang=lang,
+            user_id=user_id,
+            username=username,
+            step=Step.DATE,
+            service=service,
+            name=booking.name,
+            phone=booking.phone,
+            booking_id=booking.id,
+            old_slot=f"{booking.date} {booking.time}",
+        )
+        reply = self.prompt(flow)
+        intro = t(
+            lang,
+            "reschedule_start",
+            service=self.service_name(booking.service, lang),
+            date=booking.date,
+            time=booking.time,
+        )
+        reply.text = f"{intro}\n{reply.text}"
+        return flow, reply
 
     def _finish_lead(self, flow: Flow) -> Reply:
         self.db.add_lead(flow.user_id, flow.username, flow.name, flow.phone, source="lead")

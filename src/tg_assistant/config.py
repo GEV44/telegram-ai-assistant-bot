@@ -11,6 +11,8 @@ from typing import Any
 
 import yaml
 
+DEFAULT_REMINDER_OFFSETS = (1440, 120)  # 24 h and 2 h before the visit
+
 
 @dataclass(frozen=True)
 class Service:
@@ -37,6 +39,8 @@ class BusinessConfig:
     services: tuple[Service, ...]
     schedule: Schedule = field(default_factory=Schedule)
     default_lang: str = "en"
+    reminder_offsets_minutes: tuple[int, ...] = DEFAULT_REMINDER_OFFSETS
+    digest_time: time | None = None  # owner digest; None = off
 
 
 def _t(value: str) -> time:
@@ -57,11 +61,21 @@ def load_business(path: str | Path) -> BusinessConfig:
     )
     services = tuple(Service(s["id"], dict(s["names"])) for s in data["services"])
     biz = data["business"]
+    reminders = data.get("reminders") or {}
+    hours = reminders.get("offsets_hours")
+    offsets = (
+        tuple(sorted({round(float(h) * 60) for h in hours if float(h) > 0}, reverse=True))
+        if hours is not None
+        else DEFAULT_REMINDER_OFFSETS
+    )
+    digest = (data.get("digest") or {}).get("time")
     return BusinessConfig(
         name=biz["name"],
         services=services,
         schedule=schedule,
         default_lang=biz.get("default_lang", "en"),
+        reminder_offsets_minutes=offsets,
+        digest_time=_t(digest) if digest else None,
     )
 
 

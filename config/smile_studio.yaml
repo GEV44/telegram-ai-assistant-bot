@@ -33,3 +33,12 @@ schedule:
   horizon_days: 14
   breaks:
     - ["13:00", "14:00"]
+
+# Appointment reminders: hours before the visit. The last (smallest) one carries
+# Confirm / Cancel buttons so no-shows are caught early. Default: [24, 2].
+reminders:
+  offsets_hours: [24, 2]
+
+# Owner digest sent to ADMIN_CHAT_ID every day at this local time. Remove to switch it off.
+digest:
+  time: "20:00"
