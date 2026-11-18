@@ -6,16 +6,18 @@
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#12233d"/><stop offset="1" stop-color="#0b1424"/></linearGradient>
   </defs>
   <!-- left tagline -->
-  <text x="48" y="78" font-size="30" font-weight="700" fill="#ffffff">Answers. Books. Reminds.</text>
-  <text x="48" y="108" font-size="16" fill="#9db3d0">Telegram assistant for small businesses</text>
+  <text x="48" y="74" font-size="28" font-weight="700" fill="#ffffff">Answers.</text>
+  <text x="48" y="108" font-size="28" font-weight="700" fill="#ffffff">Books. Reminds.</text>
+  <text x="48" y="140" font-size="15" fill="#9db3d0">Telegram assistant</text>
+  <text x="48" y="160" font-size="15" fill="#9db3d0">for small businesses</text>
   <g font-size="15" fill="#d6e3f5">
-    <text x="48" y="170">FAQ from your own knowledge file</text>
-    <text x="48" y="200">EN / RU / HY, detected per message</text>
-    <text x="48" y="230">Slots in SQLite, no double booking</text>
-    <text x="48" y="260">Reminders 24 h and 2 h before</text>
-    <text x="48" y="290">Owner digest and human handoff</text>
+    <text x="48" y="210">FAQ from your own knowledge file</text>
+    <text x="48" y="240">EN / RU / HY, detected per message</text>
+    <text x="48" y="270">Slots in SQLite, no double booking</text>
+    <text x="48" y="300">Reminders 24 h and 2 h before</text>
+    <text x="48" y="330">Owner digest and human handoff</text>
   </g>
-  <g fill="#2aa3ef"><circle cx="38" cy="165" r="4"/><circle cx="38" cy="195" r="4"/><circle cx="38" cy="225" r="4"/><circle cx="38" cy="255" r="4"/><circle cx="38" cy="285" r="4"/></g>
+  <g fill="#2aa3ef"><circle cx="38" cy="205" r="4"/><circle cx="38" cy="235" r="4"/><circle cx="38" cy="265" r="4"/><circle cx="38" cy="295" r="4"/><circle cx="38" cy="325" r="4"/></g>
 
   <!-- phone -->
   <rect x="300" y="24" width="340" height="512" rx="36" fill="#05090f" stroke="#2b3b55" stroke-width="3"/>
