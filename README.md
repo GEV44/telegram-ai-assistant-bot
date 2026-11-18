@@ -1,7 +1,18 @@
 # Telegram AI Assistant Bot
 
+[![CI](https://github.com/GEV44/telegram-ai-assistant-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/GEV44/telegram-ai-assistant-bot/actions/workflows/ci.yml)
+![Python 3.11 | 3.12](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue)
+![License MIT](https://img.shields.io/badge/license-MIT-green)
+![tests 110 passing](https://img.shields.io/badge/tests-110%20passing-brightgreen)
+![languages EN | RU | HY](https://img.shields.io/badge/languages-EN%20%7C%20RU%20%7C%20HY-informational)
+
+![A customer books a visit in Russian, gets the 2 h reminder with Confirm and Cancel buttons, and the owner receives a daily digest](docs/assets/hero.svg)
+
+## Why this exists
+
 Small businesses lose customers when messages go unanswered after hours and when booking means a phone call.
 This bot answers questions from your own knowledge file in three languages, books appointments, and hands every lead to the owner.
+It runs on one small server with SQLite, needs no paid API, and every behaviour is tested offline.
 
 ## Features
 
@@ -17,6 +28,15 @@ This bot answers questions from your own knowledge file in three languages, book
 - **Owner notifications** in an admin chat for every booking, lead and handoff.
 - **Human handoff** (`/human`): the owner is pinged with the customer's last message and can answer through the bot with `/reply <user_id> <text>`.
 - **Rate limiting** per user, spreadsheet-formula-safe CSV, typed code, tests that need neither network nor a Telegram token.
+
+## Use cases
+
+| Business | What the bot does |
+|---|---|
+| Clinics and dental studios | Answers price and preparation questions, books visits, sends 24 h and 2 h reminders, cuts no-shows with Confirm / Cancel. |
+| Salons and barbershops | Books by service and time slot, lets clients reschedule from `/mybookings`, shows the owner tomorrow's schedule each evening. |
+| Auto service | Collects the car problem as a lead, books a drop-off slot, hands complex cases to a human with `/human`. |
+| Tutors and studios | Handles trial-lesson bookings and timetable questions, reminds students, exports bookings to CSV. |
 
 ## Architecture
 
@@ -38,7 +58,7 @@ flowchart LR
 
 `Assistant` and `BookingEngine` do not import Telegram, so the whole behaviour is unit-tested offline. The scheduler decisions are pure functions (`reminders.due_reminders(bookings, sent, now, offsets)` and `digest.build_digest(...)`); the aiogram loop only calls them once a minute.
 
-## Quick start
+## Quickstart (60 seconds)
 
 ### Local
 
