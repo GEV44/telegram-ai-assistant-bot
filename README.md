@@ -6,6 +6,9 @@
 ![tests 110 passing](https://img.shields.io/badge/tests-110%20passing-brightgreen)
 ![languages EN | RU | HY](https://img.shields.io/badge/languages-EN%20%7C%20RU%20%7C%20HY-informational)
 
+**Live demo: [https://gev44.github.io/bot-demo/](https://gev44.github.io/bot-demo/)** (runs in your browser, no install)  
+[![Live demo](https://img.shields.io/badge/live%20demo-try%20it%20in%20your%20browser-2481cc)](https://gev44.github.io/bot-demo/)
+
 ![A customer books a visit in Russian, gets the 2 h reminder with Confirm and Cancel buttons, and the owner receives a daily digest](docs/assets/hero.svg)
 
 ## Why this exists
